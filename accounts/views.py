@@ -27,6 +27,11 @@ def profile_view(request):
         messages.success(request, 'Profile updated successfully!')
         return redirect('/accounts/profile/')
 
+    # Check if user just added phone number
+    phone_just_added = not request.user.phone_verified and request.user.phone
+    if phone_just_added:
+        messages.info(request, '📱 Thank you for adding your phone number! You will now receive SMS notifications for found items.')
+
     return render(request, 'accounts/profile.html')
 
 def register_view(request):
@@ -58,6 +63,19 @@ def register_view(request):
             phone=phone,
             student_id=student_id,
         )
+        
+        # Send welcome SMS if phone number provided
+        if phone:
+            try:
+                from notifications.services import send_sms
+                welcome_message = f"Welcome to MMU Lost & Found, {first_name}! Your account has been created successfully. You can now register and track your lost items."
+                send_sms(phone, welcome_message)
+            except Exception as e:
+                # Log error but don't fail registration
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Welcome SMS failed: {str(e)}")
+        
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         messages.success(request, f'Welcome, {first_name}! Your account has been created.')
         return redirect('/dashboard/')
