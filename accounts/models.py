@@ -10,7 +10,6 @@ class User(AbstractUser):
     phone = models.CharField(max_length=15, blank=True, null=True)
     student_id = models.CharField(max_length=20, blank=True, null=True)
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='STUDENT')
-    phone_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.get_full_name()} ({self.email})"

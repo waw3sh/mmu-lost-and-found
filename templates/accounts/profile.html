@@ -35,25 +35,20 @@
         </div>
 
         <!-- Important notice -->
-        {% if not request.user.phone_verified and request.user.phone %}
+        {% if not request.user.phone %}
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+            <p class="text-amber-800 text-sm">
+                <span class="font-medium">⚠️ Important:</span>
+                Add your phone number to receive SMS notifications when
+                someone finds your item. Make sure it is correct and
+                in international format: +254712345678
+            </p>
+        </div>
+        {% else %}
         <div class="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
             <p class="text-green-800 text-sm">
                 <span class="font-medium">✅ Phone Number Added:</span>
                 Thank you for adding your phone number! You will now receive SMS notifications when your items are found.
-            </p>
-        </div>
-        {% elif not request.user.phone %}
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-            <p class="text-amber-800 text-sm">
-                <span class="font-medium">📱 Add Phone Number:</span>
-                Add your phone number to receive SMS notifications when someone finds your items.
-            </p>
-        </div>
-        {% else %}
-        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-            <p class="text-blue-800 text-sm">
-                <span class="font-medium">🔔 Phone Verified:</span>
-                Your phone number is verified and active for SMS notifications.
             </p>
         </div>
         {% endif %}
