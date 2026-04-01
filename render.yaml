@@ -19,6 +19,8 @@ services:
         value: 239584521538991
       - key: CLOUDINARY_API_SECRET
         value: S4RPdOhHTrhhtn07a59KwzlTWK4
+      - key: APP_URL
+        value: https://mmu-lost-and-found.onrender.com
 
 databases:
   - name: lostfound-db
