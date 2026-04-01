@@ -90,8 +90,9 @@ def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id, reporter=request.user)
 
     # Generate QR code pointing to the public finder URL
-    app_url = 'http://localhost:8000'  # In production, this should come from settings
-    finder_url = f"{app_url}/found/{item.uuid}/"
+    from django.conf import settings
+    app_url = getattr(settings, 'APP_URL', 'http://localhost:8000')
+    finder_url = f"{app_url}/reports/found/{item.uuid}/"
 
     qr = qrcode.QRCode(
         version=1,
