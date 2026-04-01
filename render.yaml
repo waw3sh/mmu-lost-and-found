@@ -14,11 +14,11 @@ services:
       - key: AT_USERNAME
         value: sandbox
       - key: CLOUDINARY_CLOUD_NAME
-        sync: false
+        value: dnkm4xw93
       - key: CLOUDINARY_API_KEY
-        sync: false
+        value: 239584521538991
       - key: CLOUDINARY_API_SECRET
-        sync: false
+        value: S4RPdOhHTrhhtn07a59KwzlTWK4
 
 databases:
   - name: lostfound-db
