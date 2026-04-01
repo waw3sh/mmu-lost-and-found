@@ -8,6 +8,18 @@ from .models import User
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('/dashboard/')
+    
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email, password=password)
+        if user:
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            return redirect('/dashboard/')
+        else:
+            messages.error(request, 'Invalid email or password. Please try again.')
+    
+    return render(request, 'accounts/login.html')
 
 @login_required
 def profile_view(request):
@@ -67,16 +79,3 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
-
-
-@login_required
-def edit_profile_view(request):
-    if request.method == 'POST':
-        request.user.first_name = request.POST.get('first_name', '').strip()
-        request.user.last_name = request.POST.get('last_name', '').strip()
-        request.user.phone = request.POST.get('phone', '').strip()
-        request.user.student_id = request.POST.get('student_id', '').strip()
-        request.user.save()
-        messages.success(request, 'Profile updated successfully!')
-        return redirect('/accounts/profile/')
-    return render(request, 'accounts/profile.html')
