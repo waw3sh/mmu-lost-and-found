@@ -18,7 +18,7 @@ def admin_required(view_func):
     return wrapper
 
 
-@login_required
+@admin_required
 def admin_overview(request):
     """Main admin dashboard with system-wide stats."""
     total_users = User.objects.count()
