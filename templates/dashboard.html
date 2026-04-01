@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — MMU Lost & Found</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <span class="text-gray-900 font-semibold">MMU Lost & Found</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/items/" class="text-gray-600 hover:text-gray-900">Browse Items</a>
+                    <a href="/items/my-items/" class="text-gray-600 hover:text-gray-900">My Items</a>
+                    <a href="/claims/" class="text-gray-600 hover:text-gray-900">Claims</a>
+                    <div class="relative">
+                        <button class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <span class="sr-only">Open user menu</span>
+                            <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
+                                <span class="text-sm font-medium text-gray-700">{{ request.user.first_name.0 }}{{ request.user.last_name.0 }}</span>
+                            </div>
+                        </button>
+                    </div>
+                    <a href="/accounts/logout/" class="text-gray-600 hover:text-gray-900">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900">
+                Welcome back, {{ request.user.first_name }} 👋</h1>
+            <p class="text-gray-500 text-sm mt-1">
+                Here is what is happening with your items today.</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-gray-500">Total Items</span>
+                </div>
+                <p class="text-3xl font-bold text-gray-900">{{ total_items }}</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-gray-500">Active Items</span>
+                </div>
+                <p class="text-3xl font-bold text-gray-900">{{ active_items }}</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-gray-500">Recovered</span>
+                </div>
+                <p class="text-3xl font-bold text-gray-900">{{ recovered }}</p>
+            </div>
+            <div class="bg-white rounded-xl border border-gray-100 p-5">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-9 h-9 bg-orange-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm text-gray-500">Pending Claims</span>
+                </div>
+                <p class="text-3xl font-bold text-gray-900">{{ pending_claims }}</p>
+            </div>
+        </div>
+
+        <!-- Quick Action -->
+        <div class="mb-8">
+            <a href="/items/register/" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Register New Item
+            </a>
+        </div>
+
+        <!-- Recent Items -->
+        <div class="bg-white rounded-xl border border-gray-100">
+            <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="font-semibold text-gray-900">Recent Items</h2>
+                <a href="/items/my-items/" class="text-sm text-green-600 hover:underline">View all</a>
+            </div>
+            {% if recent_items %}
+            <div class="divide-y divide-gray-50">
+                {% for item in recent_items %}
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-900">{{ item.name }}</p>
+                            <p class="text-xs text-gray-400">{{ item.get_category_display }} · {{ item.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs font-medium px-2 py-1 rounded-full
+                            {% if item.status == 'found' %}
+                                bg-blue-100 text-blue-700
+                            {% elif item.status == 'claimed' %}
+                                bg-amber-100 text-amber-700
+                            {% elif item.status == 'recovered' %}
+                                bg-green-100 text-green-700
+                            {% else %}
+                                bg-gray-100 text-gray-500
+                            {% endif %}">
+                            {{ item.get_status_display }}
+                        </span>
+                        <a href="/items/{{ item.id }}/" class="text-xs text-gray-400 hover:text-gray-600">View →</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="px-6 py-12 text-center">
+                <p class="text-gray-400 text-sm mb-3">No items registered yet.</p>
+                <a href="/items/register/" class="text-green-600 text-sm font-medium hover:underline">Register your first item →</a>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

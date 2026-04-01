@@ -1,0 +1,73 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+        <a href="/dashboard/" class="text-blue-600 hover:text-blue-800 mb-4 inline-block">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <h1 class="text-3xl font-bold text-gray-800">{{ item.name }}</h1>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    {{ item.get_status_display }}
+                </span>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Description</h3>
+                    <p class="text-gray-600">{{ item.description }}</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Details</h3>
+                    <div class="space-y-2">
+                        <p class="text-gray-600">
+                            <span class="font-medium">Category:</span> {{ item.get_category_display }}
+                        </p>
+                        {% if item.location_found %}
+                            <p class="text-gray-600">
+                                <span class="font-medium">Location Found:</span> {{ item.location_found }}
+                            </p>
+                        {% endif %}
+                        <p class="text-gray-600">
+                            <span class="font-medium">Reported by:</span> 
+                            {{ item.reporter.first_name }} {{ item.reporter.last_name }}
+                        </p>
+                        <p class="text-gray-600">
+                            <span class="font-medium">Date Reported:</span> 
+                            {{ item.created_at|date:"F d, Y" }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="border-t pt-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Claims</h3>
+                    <p class="text-gray-600">
+                        {{ item.claims.count }} claim{{ item.claims.count|pluralize }} submitted
+                    </p>
+                </div>
+                
+                {% if user != item.reporter %}
+                    <form action="{% url 'claims:create_claim' item.id %}" method="get">
+                        <button type="submit" 
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Claim This Item
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

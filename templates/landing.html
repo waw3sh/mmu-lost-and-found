@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MMU Lost & Found — Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0F172A]">
+    <!-- Navbar -->
+    <nav class="px-6 py-4 flex items-center justify-between max-w-6xl mx-auto">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <span class="text-white font-semibold">MMU Lost & Found</span>
+        </div>
+        <a href="/accounts/login/" class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+            Sign In
+        </a>
+    </nav>
+
+    <!-- Hero -->
+    <div class="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            Never Lose Your Valuables Again
+        </h1>
+        <p class="text-slate-400 text-lg mb-8 max-w-2xl mx-auto">
+            Register your items, attach a QR sticker, and get notified
+            instantly when someone finds them. Your privacy is always protected.
+        </p>
+        <a href="/accounts/register/" class="inline-block bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-4 rounded-xl transition-colors text-lg">
+            Get Started — It's Free
+        </a>
+    </div>
+
+    <!-- Features -->
+    <div class="max-w-5xl mx-auto px-6 pb-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-slate-800 rounded-2xl p-6">
+                <div class="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-semibold mb-2">Register Items</h3>
+                <p class="text-slate-400 text-sm">
+                    Add your valuables — laptop, keys, ID card, bags —
+                    and get a unique QR code for each one.</p>
+            </div>
+            <div class="bg-slate-800 rounded-2xl p-6">
+                <div class="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-semibold mb-2">Anonymous Alerts</h3>
+                <p class="text-slate-400 text-sm">
+                    When someone scans your QR code, you get an SMS alert
+                    instantly. Your contact details stay private.</p>
+            </div>
+            <div class="bg-slate-800 rounded-2xl p-6">
+                <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                </div>
+                <h3 class="text-white font-semibold mb-2">Secure Recovery</h3>
+                <p class="text-slate-400 text-sm">
+                    Verify your identity with a one-time PIN and confirm
+                    collection safely through the security desk.</p>
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="mt-16 text-center">
+            <h2 class="text-2xl font-bold text-white mb-10">How It Works</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {% for step in steps %}
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3">
+                        {{ forloop.counter }}
+                    </div>
+                    <p class="text-slate-300 text-sm">{{ step }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

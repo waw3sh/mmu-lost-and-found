@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Register — MMU Lost & Found{% endblock %}
+{% block content %}
+<div class="min-h-screen bg-[#0F172A] flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16
+                        bg-green-500 rounded-2xl mb-4">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0
+                             00-2-2H6a2 2 0 00-2 2v6a2 2 0 002
+                             2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-white">Create Account</h1>
+            <p class="text-slate-400 text-sm mt-1">
+                Join MMU Lost & Found system</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-8 shadow-2xl">
+            <form method="POST" action="{% url 'accounts:register' %}">
+                {% csrf_token %}
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            First Name</label>
+                        <input type="text" name="first_name" required
+                               class="w-full px-4 py-3 border border-gray-200
+                                      rounded-lg text-sm focus:outline-none
+                                      focus:ring-2 focus:ring-green-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Last Name</label>
+                        <input type="text" name="last_name" required
+                               class="w-full px-4 py-3 border border-gray-200
+                                      rounded-lg text-sm focus:outline-none
+                                      focus:ring-2 focus:ring-green-500">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Email Address</label>
+                    <input type="email" name="email" required
+                           placeholder="yourname@mmu.ac.ke"
+                           class="w-full px-4 py-3 border border-gray-200
+                                  rounded-lg text-sm focus:outline-none
+                                  focus:ring-2 focus:ring-green-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number</label>
+                    <input type="text" name="phone"
+                           placeholder="+254700000000"
+                           class="w-full px-4 py-3 border border-gray-200
+                                  rounded-lg text-sm focus:outline-none
+                                  focus:ring-2 focus:ring-green-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Student / Staff ID</label>
+                    <input type="text" name="student_id"
+                           placeholder="MMU/CS/001"
+                           class="w-full px-4 py-3 border border-gray-200
+                                  rounded-lg text-sm focus:outline-none
+                                  focus:ring-2 focus:ring-green-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Password</label>
+                    <input type="password" name="password1" required
+                           class="w-full px-4 py-3 border border-gray-200
+                                  rounded-lg text-sm focus:outline-none
+                                  focus:ring-2 focus:ring-green-500">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Confirm Password</label>
+                    <input type="password" name="password2" required
+                           class="w-full px-4 py-3 border border-gray-200
+                                  rounded-lg text-sm focus:outline-none
+                                  focus:ring-2 focus:ring-green-500">
+                </div>
+                <button type="submit"
+                        class="w-full bg-green-500 hover:bg-green-600 text-white
+                               font-semibold py-3 rounded-lg transition-colors
+                               text-sm">
+                    Create Account
+                </button>
+            </form>
+            <div class="mt-4 text-center">
+                <p class="text-sm text-gray-500">Already have an account?
+                    <a href="{% url 'accounts:login' %}"
+                       class="text-green-600 font-medium hover:underline">
+                        Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

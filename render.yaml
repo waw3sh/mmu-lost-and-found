@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: mmu-lost-and-found
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn lostfound.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: AT_API_KEY
+        sync: false
+      - key: AT_USERNAME
+        value: sandbox
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+databases:
+  - name: lostfound-db
+    plan: free

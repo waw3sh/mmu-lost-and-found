@@ -1,0 +1,118 @@
+{% extends 'dashboard_base.html' %}
+{% block title %}All Items — Admin Panel{% endblock %}
+{% block dashboard_content %}
+
+<div class="mb-6 flex items-center justify-between">
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">All Items</h1>
+        <p class="text-gray-500 text-sm mt-1">
+            Manage items across all users.</p>
+    </div>
+    <a href="/admin-panel/"
+       class="text-sm text-gray-400 hover:text-gray-600">← Back to Admin</a>
+</div>
+
+<!-- Search and Filter -->
+<div class="bg-white rounded-xl border border-gray-100 p-4 mb-6">
+    <form method="GET" class="flex flex-col sm:flex-row gap-3">
+        <input type="text" name="search" value="{{ search }}"
+               placeholder="Search by item name or owner..."
+               class="flex-1 px-4 py-2 border border-gray-200 rounded-lg
+                      text-sm focus:outline-none focus:ring-2
+                      focus:ring-green-500">
+        <select name="status"
+                class="px-4 py-2 border border-gray-200 rounded-lg text-sm
+                       focus:outline-none focus:ring-2 focus:ring-green-500">
+            <option value="all"
+                {% if status_filter == 'all' %}selected{% endif %}>
+                All Statuses</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value|lower }}"
+                {% if status_filter == value|lower %}selected{% endif %}>
+                {{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit"
+                class="bg-green-500 hover:bg-green-600 text-white px-4 py-2
+                       rounded-lg text-sm font-medium transition-colors">
+            Filter
+        </button>
+    </form>
+</div>
+
+<!-- Items Table -->
+<div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Item</th>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Owner</th>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Category</th>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Status</th>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Registered</th>
+                    <th class="text-left px-6 py-3 text-xs font-medium
+                               text-gray-400 uppercase">Change Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+                {% for item in items %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                        {{ item.name }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ item.reporter.get_full_name }}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500">
+                        {{ item.get_category_display }}</td>
+                    <td class="px-6 py-4">
+                        <span class="text-xs font-medium px-2 py-1 rounded-full
+                            {% if item.status == 'active' %}
+                                bg-blue-100 text-blue-700
+                            {% elif item.status == 'found' %}
+                                bg-amber-100 text-amber-700
+                            {% elif item.status == 'claim_pending' %}
+                                bg-orange-100 text-orange-700
+                            {% elif item.status == 'recovered' %}
+                                bg-green-100 text-green-700
+                            {% else %}
+                                bg-gray-100 text-gray-500
+                            {% endif %}">
+                            {{ item.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-sm text-gray-400">
+                        {{ item.created_at|date:"M d, Y" }}</td>
+                    <td class="px-6 py-4">
+                        <form method="POST" class="flex gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_id"
+                                   value="{{ item.id }}">
+                            <select name="new_status"
+                                    class="px-2 py-1 border border-gray-200
+                                           rounded-lg text-xs focus:outline-none">
+                                {% for value, label in status_choices %}
+                                <option value="{{ value }}"
+                                    {% if item.status == value %}selected{% endif %}>
+                                    {{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit"
+                                    class="bg-gray-900 hover:bg-gray-700
+                                           text-white px-3 py-1 rounded-lg
+                                           text-xs transition-colors">
+                                Save
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
