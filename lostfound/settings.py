@@ -177,6 +177,9 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': config('CLOUDINARY_API_SECRET'),
 }
 
+# Production URL for QR codes and links
+APP_URL = 'https://mmu-lost-and-found.onrender.com'
+
 # Production settings for Render.com
 import dj_database_url
 import os

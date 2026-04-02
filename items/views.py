@@ -91,7 +91,8 @@ def item_detail(request, item_id):
 
     # Generate QR code pointing to the public finder URL
     from django.conf import settings
-    app_url = getattr(settings, 'APP_URL', 'http://localhost:8000')
+    # Use production URL for QR codes to make them scannable from anywhere
+    app_url = getattr(settings, 'APP_URL', 'https://mmu-lost-and-found.onrender.com')
     finder_url = f"{app_url}/found/{item.uuid}/"
 
     qr = qrcode.QRCode(
