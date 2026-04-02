@@ -74,6 +74,18 @@ def register_item_view(request):
             photo=photo if photo else None,
             status='active',  # Personal registered items are 'active', not 'found'
         )
+        
+        # Send instant SMS notification to user
+        if request.user.phone:
+            try:
+                from notifications.services import send_sms
+                confirmation_message = f"Hi {request.user.first_name}! Your item '{name}' has been successfully registered on MMU Lost & Found. Keep it safe and attach the QR code for easy recovery."
+                send_sms(request.user.phone, confirmation_message)
+            except Exception as e:
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.error(f"Item registration SMS failed: {str(e)}")
+        
         messages.success(
             request,
             f'"{item.name}" registered successfully! Download your QR code below.'
