@@ -92,7 +92,7 @@ def item_detail(request, item_id):
     # Generate QR code pointing to the public finder URL
     from django.conf import settings
     app_url = getattr(settings, 'APP_URL', 'http://localhost:8000')
-    finder_url = f"{app_url}/reports/found/{item.uuid}/"
+    finder_url = f"{app_url}/found/{item.uuid}/"
 
     qr = qrcode.QRCode(
         version=1,
