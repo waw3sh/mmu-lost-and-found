@@ -12,7 +12,12 @@ def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
-        user = authenticate(request, username=email, password=password)
+        
+        # Use Django's default ModelBackend directly
+        from django.contrib.auth.backends import ModelBackend
+        backend = ModelBackend()
+        user = backend.authenticate(request, username=email, password=password)
+        
         if user:
             login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('/dashboard/')
