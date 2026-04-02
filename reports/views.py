@@ -40,8 +40,13 @@ def finder_page(request, item_uuid):
             message=message_text if message_text else None,
         )
 
+        # Update item status based on current state
         if item.status == 'active':
             item.status = 'found'
+            item.save()
+        elif item.status == 'found':
+            # If already found, mark as recovered when new report comes in
+            item.status = 'recovered'
             item.save()
 
         try:
