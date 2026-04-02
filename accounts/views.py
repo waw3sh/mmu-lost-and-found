@@ -13,13 +13,12 @@ def login_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         
-        # Use Django's default ModelBackend directly
-        from django.contrib.auth.backends import ModelBackend
-        backend = ModelBackend()
-        user = backend.authenticate(request, username=email, password=password)
+        # Use Django's built-in authenticate function
+        from django.contrib.auth import authenticate
+        user = authenticate(request, username=email, password=password)
         
         if user:
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            login(request, user)
             return redirect('/dashboard/')
         else:
             messages.error(request, 'Invalid email or password. Please try again.')
