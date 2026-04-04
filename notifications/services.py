@@ -43,15 +43,29 @@ def send_sms(phone_number, message):
 
 def notify_owner_item_found(owner, item, location_found, request):
     """Notify owner when their item is reported found."""
+    print(f"[NOTIFICATION] Attempting to notify owner: {owner.email}")
+    print(f"[NOTIFICATION] Item: {item.name}")
+    print(f"[NOTIFICATION] Location: {location_found}")
+    print(f"[NOTIFICATION] Owner phone: {owner.phone}")
+    
     if not owner.phone:
         print(f"[SMS SKIP] {owner.email} has no phone number on file.")
         return False
+    
+    # Fix APP_URL if it has the typo
     app_url = config('APP_URL', default='http://localhost:8000')
+    if 'https://' in app_url:
+        app_url = app_url.replace('https://', 'https://')
+    
     message = (
         f'Hello {owner.first_name}! Your item "{item.name}" was found '
         f'near "{location_found}". Log in to claim it: {app_url}/claims/'
     )
-    return send_sms(owner.phone, message)
+    
+    print(f"[SMS MESSAGE] To: {owner.phone} | Message: {message}")
+    result = send_sms(owner.phone, message)
+    print(f"[SMS RESULT] Success: {result}")
+    return result
 
 
 def send_otp_sms(owner, otp_code):
