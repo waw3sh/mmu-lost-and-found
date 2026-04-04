@@ -95,3 +95,28 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+@login_required  
+def test_sms_view(request):
+    """Temporary debug view — remove after fixing SMS."""
+    if request.user.role != 'ADMIN':
+        return JsonResponse({'error': 'Admin only'}, status=403)
+    
+    from notifications.services import send_sms, AT_API_KEY, AT_USERNAME, AT_SMS_URL
+    
+    result = send_sms(
+        request.user.phone or '+254799118934',
+        'Test SMS from MMU Lost & Found system.'
+    )
+    
+    return JsonResponse({
+        'sms_sent': result,
+        'username': AT_USERNAME,
+        'url': AT_SMS_URL,
+        'api_key_set': bool(AT_API_KEY and AT_API_KEY != 'your-africastalking-api-key'),
+        'api_key_prefix': AT_API_KEY[:8] + '...' if AT_API_KEY else 'NOT SET',
+    })
