@@ -50,7 +50,7 @@ def finder_page(request, item_uuid):
             item.save()
 
         try:
-            notify_owner_item_found(item.reporter, item, location_found, request)
+            notify_owner_item_found(item.reporter, item, location_found)
         except Exception as e:
             logger.error(f"Notification failed: {str(e)}")
 
