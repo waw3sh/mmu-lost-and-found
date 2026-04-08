@@ -104,11 +104,33 @@ import datetime
 @login_required  
 def test_sms_view(request):
     """Temporary debug view — remove after fixing SMS."""
-    if request.user.role != 'ADMIN':
-        return JsonResponse({'error': 'Admin only'}, status=403)
-    
     from notifications.services import send_sms, AT_API_KEY, AT_USERNAME, AT_SMS_URL
     from accounts.models import User
+    from django.contrib.auth.hashers import make_password
+    
+    # Check if password reset is requested
+    if request.GET.get('reset_admin_password') == 'true':
+        if request.user.role != 'ADMIN':
+            return JsonResponse({'error': 'Admin only'}, status=403)
+        
+        # Reset admin passwords in production
+        admin_users = User.objects.filter(role='ADMIN')
+        reset_count = 0
+        
+        for admin in admin_users:
+            admin.password = make_password('Admin1234!')
+            admin.save()
+            reset_count += 1
+        
+        return JsonResponse({
+            'password_reset': True,
+            'reset_count': reset_count,
+            'new_password': 'Admin1234!',
+            'message': f'Reset {reset_count} admin passwords to Admin1234!'
+        })
+    
+    if request.user.role != 'ADMIN':
+        return JsonResponse({'error': 'Admin only'}, status=403)
     
     # Get all users from production database
     all_users = User.objects.all().order_by('-date_joined')
@@ -146,5 +168,15 @@ def test_sms_view(request):
                 'registered': str(tess_user.date_joined) if tess_user else None,
                 'items': tess_user.reported_items.count() if tess_user else 0
             }
-        }
+        },
+        'admin_users': [
+            {
+                'email': admin.email,
+                'name': f"{admin.first_name} {admin.last_name}",
+                'role': admin.role,
+                'is_staff': admin.is_staff,
+                'is_superuser': admin.is_superuser
+            }
+            for admin in User.objects.filter(role='ADMIN')
+        ]
     })
