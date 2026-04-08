@@ -108,6 +108,14 @@ def test_sms_view(request):
         return JsonResponse({'error': 'Admin only'}, status=403)
     
     from notifications.services import send_sms, AT_API_KEY, AT_USERNAME, AT_SMS_URL
+    from accounts.models import User
+    
+    # Get all users from production database
+    all_users = User.objects.all().order_by('-date_joined')
+    users_with_phone = User.objects.filter(phone__isnull=False).exclude(phone='').order_by('-date_joined')
+    
+    # Look for tess@gmail.com specifically
+    tess_user = User.objects.filter(email='tess@gmail.com').first()
     
     # Test SMS
     result = send_sms(
@@ -126,5 +134,17 @@ def test_sms_view(request):
         'user_phone': request.user.phone,
         'user_email': request.user.email,
         'environment': 'PRODUCTION' if config('DEBUG', default=False) == False else 'LOCAL',
-        'timestamp': str(datetime.datetime.now())
+        'timestamp': str(datetime.datetime.now()),
+        'database_stats': {
+            'total_users': all_users.count(),
+            'users_with_phone': users_with_phone.count(),
+            'tess_user_found': tess_user is not None,
+            'tess_user_details': {
+                'email': tess_user.email if tess_user else None,
+                'name': f"{tess_user.first_name} {tess_user.last_name}" if tess_user else None,
+                'phone': tess_user.phone if tess_user else None,
+                'registered': str(tess_user.date_joined) if tess_user else None,
+                'items': tess_user.reported_items.count() if tess_user else 0
+            }
+        }
     })
