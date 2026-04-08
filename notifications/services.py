@@ -46,11 +46,15 @@ def send_sms(phone_number, message):
     }
 
     try:
+        # For sandbox, try with SSL verification disabled for local testing
+        verify_ssl = AT_USERNAME != 'sandbox'
+        
         response = requests.post(
             AT_SMS_URL,
             headers=headers,
             data=payload,
             timeout=30,
+            verify=verify_ssl,
         )
 
         response_data = response.json()
