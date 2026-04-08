@@ -102,6 +102,44 @@ from decouple import config
 import datetime
 
 @login_required  
+
+@login_required  
+def create_admin_view(request):
+    """Create new admin user - remove after fixing login."""
+    from django.contrib.auth.hashers import make_password
+    from accounts.models import User
+    
+    if request.user.role != 'ADMIN':
+        return JsonResponse({'error': 'Admin only'}, status=403)
+    
+    # Create new admin user
+    try:
+        new_admin = User.objects.create(
+            email='mmuadmin@lostfound.com',
+            username='mmuadmin@lostfound.com',
+            first_name='MMU',
+            last_name='Administrator',
+            password=make_password('Admin1234!'),
+            role='ADMIN',
+            is_staff=True,
+            is_superuser=True,
+            is_active=True,
+            phone='+254700000000'
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'New admin user created successfully!',
+            'email': 'mmuadmin@lostfound.com',
+            'password': 'Admin1234!',
+            'role': 'ADMIN'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
+
 def test_sms_view(request):
     """Temporary debug view — remove after fixing SMS."""
     from notifications.services import send_sms, AT_API_KEY, AT_USERNAME, AT_SMS_URL
