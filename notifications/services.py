@@ -116,7 +116,7 @@ def notify_owner_item_found(owner, item, location_found, finder_name=None, finde
             f"Your item \"{item.name}\" was found near \"{location_found}\" by {finder_name}. "
             f"Contact finder: {finder_phone}. "
             f"Meet at: {location_found}. "
-            f"Log in to claim it: {claim_url} "
+            f"View and claim: {claim_url} "
             f"- MMU Lost & Found"
         )
     elif finder_name:
@@ -124,14 +124,14 @@ def notify_owner_item_found(owner, item, location_found, finder_name=None, finde
             f"Hello {owner.first_name}! "
             f"Your item \"{item.name}\" was found near \"{location_found}\" by {finder_name}. "
             f"Meet at: {location_found}. "
-            f"Log in to claim it: {claim_url} "
+            f"View and claim: {claim_url} "
             f"- MMU Lost & Found"
         )
     else:
         message = (
             f"Hello {owner.first_name}! "
             f"Your item \"{item.name}\" was found near \"{location_found}\". "
-            f"Log in to claim it: {claim_url} "
+            f"View and claim: {claim_url} "
             f"- MMU Lost & Found"
         )
     
