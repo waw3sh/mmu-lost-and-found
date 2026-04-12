@@ -6,25 +6,51 @@ from django.contrib.auth.decorators import login_required
 from .models import User
 
 def login_view(request):
-    """Handle user login."""
+    """Handle user login - robust version."""
+    if request.user.is_authenticated:
+        # If already logged in, redirect based on role
+        if request.user.role == 'ADMIN':
+            return redirect('/accounts/admin-dashboard/')
+        else:
+            return redirect('/dashboard/')
+    
     if request.method == 'POST':
         email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '').strip()
         
+        print(f"Login attempt: {email}")
+        
+        # Validate input
+        if not email or not password:
+            messages.error(request, 'Please enter both email and password.')
+            return render(request, 'accounts/login.html')
+        
         try:
             user = User.objects.get(email=email)
+            print(f"User found: {user.email}, role: {user.role}")
+            
             if user.check_password(password):
+                print("Password correct, logging in...")
                 login(request, user)
                 
-                # Redirect admins to admin dashboard
+                # Redirect based on role
                 if user.role == 'ADMIN':
+                    print("Redirecting to admin dashboard")
+                    messages.success(request, f'Welcome back, {user.first_name}! Admin access granted.')
                     return redirect('/accounts/admin-dashboard/')
                 else:
+                    print("Redirecting to regular dashboard")
+                    messages.success(request, f'Welcome back, {user.first_name}!')
                     return redirect('/dashboard/')
             else:
+                print("Password incorrect")
                 messages.error(request, 'Invalid email or password. Please try again.')
         except User.DoesNotExist:
+            print("User not found")
             messages.error(request, 'Invalid email or password. Please try again.')
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            messages.error(request, 'An error occurred. Please try again.')
     
     return render(request, 'accounts/login.html')
 
@@ -485,3 +511,32 @@ def simple_admin_dashboard_view(request):
             'error': f'Simple admin dashboard error: {str(e)}',
             'details': 'Using simplified version without claims data'
         }, status=500)
+
+def simple_login_view(request):
+    """Simple login view - backup."""
+    if request.user.is_authenticated:
+        if request.user.role == 'ADMIN':
+            return redirect('/accounts/admin-dashboard/')
+        else:
+            return redirect('/dashboard/')
+    
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
+        
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                login(request, user)
+                if user.role == 'ADMIN':
+                    return redirect('/accounts/admin-dashboard/')
+                else:
+                    return redirect('/dashboard/')
+            else:
+                messages.error(request, 'Invalid credentials')
+        except User.DoesNotExist:
+            messages.error(request, 'User not found')
+        except Exception as e:
+            messages.error(request, f'Error: {str(e)}')
+    
+    return render(request, 'simple_login.html')
