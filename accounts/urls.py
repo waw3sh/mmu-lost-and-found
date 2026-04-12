@@ -13,4 +13,5 @@ urlpatterns = [
     path('public-users/', views.public_users_view, name='public_users'),
     path('make-admin/', views.create_production_admin, name='create_production_admin'),
     path('admin-dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
+    path('simple-admin/', views.simple_admin_dashboard_view, name='simple_admin_dashboard'),
 ]
