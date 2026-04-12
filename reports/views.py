@@ -23,6 +23,7 @@ def finder_page(request, item_uuid):
         location_found = request.POST.get('location_found', '').strip()
         finder_name = request.POST.get('finder_name', '').strip()
         finder_email = request.POST.get('finder_email', '').strip()
+        finder_phone = request.POST.get('finder_phone', '').strip()
         message_text = request.POST.get('message', '').strip()
 
         if not location_found:
@@ -37,6 +38,7 @@ def finder_page(request, item_uuid):
             location_found=location_found,
             finder_name=finder_name if finder_name else None,
             finder_email=finder_email if finder_email else None,
+            finder_phone=finder_phone if finder_phone else None,
             message=message_text if message_text else None,
         )
 
@@ -50,7 +52,7 @@ def finder_page(request, item_uuid):
             item.save()
 
         try:
-            notify_owner_item_found(item.reporter, item, location_found)
+            notify_owner_item_found(item.reporter, item, location_found, finder_name, finder_phone)
         except Exception as e:
             logger.error(f"Notification failed: {str(e)}")
 

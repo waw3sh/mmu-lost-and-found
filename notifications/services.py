@@ -96,9 +96,10 @@ def send_sms(phone_number, message):
         return False
 
 
-def notify_owner_item_found(owner, item, location_found):
+def notify_owner_item_found(owner, item, location_found, finder_name=None, finder_phone=None):
     """
     Notify item owner when their item is reported found.
+    Include finder contact information if available.
     Never expose owner details to finder.
     """
     if not owner.phone:
@@ -108,12 +109,32 @@ def notify_owner_item_found(owner, item, location_found):
     app_url = config('APP_URL', default='http://localhost:8000')
     claim_url = f"{app_url}/claims/"
 
-    message = (
-        f"Hello {owner.first_name}! "
-        f"Your item \"{item.name}\" was found near \"{location_found}\". "
-        f"Log in to claim it: {claim_url} "
-        f"- MMU Lost & Found"
-    )
+    # Build enhanced message with finder contact info
+    if finder_name and finder_phone:
+        message = (
+            f"Hello {owner.first_name}! "
+            f"Your item \"{item.name}\" was found near \"{location_found}\" by {finder_name}. "
+            f"Contact finder: {finder_phone}. "
+            f"Meet at: {location_found}. "
+            f"Log in to claim it: {claim_url} "
+            f"- MMU Lost & Found"
+        )
+    elif finder_name:
+        message = (
+            f"Hello {owner.first_name}! "
+            f"Your item \"{item.name}\" was found near \"{location_found}\" by {finder_name}. "
+            f"Meet at: {location_found}. "
+            f"Log in to claim it: {claim_url} "
+            f"- MMU Lost & Found"
+        )
+    else:
+        message = (
+            f"Hello {owner.first_name}! "
+            f"Your item \"{item.name}\" was found near \"{location_found}\". "
+            f"Log in to claim it: {claim_url} "
+            f"- MMU Lost & Found"
+        )
+    
     return send_sms(owner.phone, message)
 
 
