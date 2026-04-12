@@ -25,6 +25,9 @@
                     <a href="/items/" class="text-gray-600 hover:text-gray-900">Browse Items</a>
                     <a href="/items/my-items/" class="text-gray-600 hover:text-gray-900">My Items</a>
                     <a href="/claims/" class="text-gray-600 hover:text-gray-900">Claims</a>
+                    {% if is_admin %}
+                    <a href="/accounts/admin-dashboard/" class="text-green-600 hover:text-green-900 font-semibold">Admin Dashboard</a>
+                    {% endif %}
                     <div class="relative">
                         <button class="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <span class="sr-only">Open user menu</span>

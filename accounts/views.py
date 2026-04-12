@@ -6,21 +6,24 @@ from django.contrib.auth.decorators import login_required
 from .models import User
 
 def login_view(request):
-    if request.user.is_authenticated:
-        return redirect('/dashboard/')
-    
+    """Handle user login."""
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '').strip()
         
-        # Use Django's built-in authenticate function
-        from django.contrib.auth import authenticate
-        user = authenticate(request, username=email, password=password)
-        
-        if user:
-            login(request, user)
-            return redirect('/dashboard/')
-        else:
+        try:
+            user = User.objects.get(email=email)
+            if user.check_password(password):
+                login(request, user)
+                
+                # Redirect admins to admin dashboard
+                if user.role == 'ADMIN':
+                    return redirect('/accounts/admin-dashboard/')
+                else:
+                    return redirect('/dashboard/')
+            else:
+                messages.error(request, 'Invalid email or password. Please try again.')
+        except User.DoesNotExist:
             messages.error(request, 'Invalid email or password. Please try again.')
     
     return render(request, 'accounts/login.html')

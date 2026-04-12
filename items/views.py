@@ -26,6 +26,7 @@ def dashboard_view(request):
         'recovered': recovered,
         'pending_claims': pending_claims,
         'recent_items': recent_items,
+        'is_admin': user.role == 'ADMIN',
     }
     return render(request, 'dashboard.html', context)
 
