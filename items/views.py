@@ -193,3 +193,100 @@ def create_item(request):
             messages.error(request, 'Please fill in all required fields.')
     
     return render(request, 'items/create_item.html')
+
+@login_required
+def owner_claim_view(request, item_id, otp_code):
+    """Owner claim view with OTP validation."""
+    from django.shortcuts import get_object_or_404
+    from django.contrib import messages
+    from items.models import Item
+    from claims.models import Claim
+    
+    # Get the item
+    item = get_object_or_404(Item, id=item_id)
+    
+    # Verify user is the owner of this item
+    if item.reporter != request.user:
+        messages.error(request, 'You can only claim your own items.')
+        return redirect('/items/my-items/')
+    
+    # Check if item is in 'found' status
+    if item.status != 'found':
+        messages.error(request, 'This item is not available for claiming.')
+        return redirect('/items/my-items/')
+    
+    # Check if claim already exists
+    existing_claim = Claim.objects.filter(item=item).first()
+    if existing_claim:
+        messages.info(request, 'A claim already exists for this item.')
+        return redirect('claims:claim_detail', claim_id=existing_claim.id)
+    
+    if request.method == 'POST':
+        handoff_method = request.POST.get('handoff_method')
+        message = request.POST.get('message', '')
+        
+        if handoff_method:
+            # Create claim for owner (auto-verified since they have OTP)
+            claim = Claim.objects.create(
+                item=item,
+                claimant=request.user,
+                otp_code=otp_code,
+                otp_verified=True,  # Auto-verify for owners
+                status='VERIFIED',
+                handoff_method=handoff_method
+            )
+            
+            # Update item status
+            item.status = 'claimed'
+            item.save()
+            
+            messages.success(request, f'Your item "{item.name}" has been successfully claimed!')
+            return redirect('claims:claim_detail', claim_id=claim.id)
+        else:
+            messages.error(request, 'Please select a handoff method.')
+    
+    context = {
+        'item': item,
+        'otp_code': otp_code,
+        'is_owner': True
+    }
+    return render(request, 'claims/owner_claim.html', context)
+
+@login_required
+def generate_owner_otp(request, item_id):
+    """Generate OTP for owner to claim their found item."""
+    from django.shortcuts import get_object_or_404
+    from django.contrib import messages
+    from django.http import JsonResponse
+    from items.models import Item
+    from claims.models import Claim
+    from notifications.services import generate_and_send_owner_otp
+    
+    # Get item
+    item = get_object_or_404(Item, id=item_id)
+    
+    # Verify user is owner of this item
+    if item.reporter != request.user:
+        return JsonResponse({'error': 'You can only generate OTP for your own items.'}, status=403)
+    
+    # Check if item is in 'found' status
+    if item.status != 'found':
+        return JsonResponse({'error': 'This item is not available for OTP claiming.'}, status=400)
+    
+    # Check if claim already exists
+    existing_claim = Claim.objects.filter(item=item).first()
+    if existing_claim:
+        return JsonResponse({'error': 'A claim already exists for this item.'}, status=400)
+    
+    # Generate and send OTP
+    otp_code = generate_and_send_owner_otp(request.user, item)
+    
+    if otp_code:
+        return JsonResponse({
+            'success': True,
+            'message': f'OTP sent to {request.user.phone}',
+            'otp_code': otp_code,
+            'claim_url': f"/items/owner-claim/{item.id}/{otp_code}/"
+        })
+    else:
+        return JsonResponse({'error': 'Failed to send OTP. Please try again.'}, status=500)

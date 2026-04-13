@@ -9,4 +9,6 @@ urlpatterns = [
     path('my-items/', views.my_items, name='my_items'),
     path('create/', views.create_item, name='create_item'),
     path('<int:item_id>/', views.item_detail, name='item_detail'),
+    path('owner-claim/<int:item_id>/<str:otp_code>/', views.owner_claim_view, name='owner_claim'),
+    path('generate-owner-otp/<int:item_id>/', views.generate_owner_otp, name='generate_owner_otp'),
 ]
