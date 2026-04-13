@@ -33,6 +33,16 @@ def send_sms(phone_number, message):
     if not phone_number.startswith('+'):
         phone_number = '+' + phone_number
 
+    # Display full SMS message in sandbox
+    if AT_USERNAME == 'sandbox':
+        print("=" * 80)
+        print("SMS MESSAGE (SANDBOX MODE)")
+        print("=" * 80)
+        print(f"To: {phone_number}")
+        print(f"Message: {message}")
+        print(f"Length: {len(message)} characters")
+        print("=" * 80)
+
     headers = {
         'apiKey': AT_API_KEY,
         'Content-Type': 'application/x-www-form-urlencoded',
