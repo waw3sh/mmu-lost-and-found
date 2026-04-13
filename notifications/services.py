@@ -107,13 +107,14 @@ def notify_owner_item_found(owner, item, location_found, finder_name=None, finde
         print(f"SMS skipped: no phone for {owner.get_full_name()}")
         return False
 
-    app_url = config('APP_URL', default='http://localhost:8000')
+    # Force production URL to avoid localhost issues
+    app_url = "https://mmu-lost-and-found.onrender.com"
     claim_url = f"{app_url}/claims/"
     
     # Generate owner OTP for direct claiming
     import random
     owner_otp = f"{random.randint(100000, 999999)}"
-    owner_claim_url = f"{app_url}/owner-claim/{item.id}/{owner_otp}/"
+    owner_claim_url = f"{app_url}/items/owner-claim/{item.id}/{owner_otp}/"
 
     # Build enhanced message with finder contact info and owner OTP
     if finder_name and finder_phone:
@@ -171,9 +172,9 @@ def generate_and_send_owner_otp(owner, item):
     # Generate 6-digit OTP
     otp_code = f"{random.randint(100000, 999999)}"
     
-    # Create owner claim URL with OTP
-    app_url = config('APP_URL', default='http://localhost:8000')
-    owner_claim_url = f"{app_url}/owner-claim/{item.id}/{otp_code}/"
+    # Force production URL to avoid localhost issues
+    app_url = "https://mmu-lost-and-found.onrender.com"
+    owner_claim_url = f"{app_url}/items/owner-claim/{item.id}/{otp_code}/"
     
     # Send OTP to owner's registered phone
     message = (
