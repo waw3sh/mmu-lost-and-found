@@ -24,18 +24,23 @@ def create_claim(request, item_id):
     if request.method == 'POST':
         otp = request.POST.get('otp')
         handoff_method = request.POST.get('handoff_method')
-        message = request.POST.get('message', '')
         
         if otp and handoff_method:
-            claim = Claim.objects.create(
-                item=item,
-                claimant=request.user,
-                otp_code=otp,  # Fixed: use otp_code instead of otp
-                handoff_method=handoff_method,
-                message=message
-            )
-            messages.success(request, 'Your claim has been submitted successfully!')
-            return redirect('claims:claim_detail', claim_id=claim.id)
+            try:
+                claim = Claim.objects.create(
+                    item=item,
+                    claimant=request.user,
+                    otp_code=otp,  # Fixed: use otp_code instead of otp
+                    handoff_method=handoff_method
+                )
+                messages.success(request, 'Your claim has been submitted successfully!')
+                return redirect('claims:claim_detail', claim_id=claim.id)
+            except Exception as e:
+                if 'UNIQUE constraint' in str(e):
+                    messages.error(request, 'A claim already exists for this item.')
+                else:
+                    messages.error(request, f'Error creating claim: {str(e)}')
+                return render(request, 'claims/create_claim.html', {'item': item})
         else:
             messages.error(request, 'Please fill in all required fields.')
     

@@ -223,25 +223,31 @@ def owner_claim_view(request, item_id, otp_code):
     
     if request.method == 'POST':
         handoff_method = request.POST.get('handoff_method')
-        message = request.POST.get('message', '')
         
         if handoff_method:
-            # Create claim for owner (auto-verified since they have OTP)
-            claim = Claim.objects.create(
-                item=item,
-                claimant=request.user,
-                otp_code=otp_code,
-                otp_verified=True,  # Auto-verify for owners
-                status='VERIFIED',
-                handoff_method=handoff_method
-            )
-            
-            # Update item status
-            item.status = 'claimed'
-            item.save()
-            
-            messages.success(request, f'Your item "{item.name}" has been successfully claimed!')
-            return redirect('claims:claim_detail', claim_id=claim.id)
+            try:
+                # Create claim for owner (auto-verified since they have OTP)
+                claim = Claim.objects.create(
+                    item=item,
+                    claimant=request.user,
+                    otp_code=otp_code,
+                    otp_verified=True,  # Auto-verify for owners
+                    status='VERIFIED',
+                    handoff_method=handoff_method
+                )
+                
+                # Update item status
+                item.status = 'claimed'
+                item.save()
+                
+                messages.success(request, f'Your item "{item.name}" has been successfully claimed!')
+                return redirect('claims:claim_detail', claim_id=claim.id)
+            except Exception as e:
+                if 'UNIQUE constraint' in str(e):
+                    messages.error(request, 'A claim already exists for this item.')
+                else:
+                    messages.error(request, f'Error creating claim: {str(e)}')
+                return render(request, 'claims/owner_claim.html', {'item': item, 'otp_code': otp_code, 'is_owner': True})
         else:
             messages.error(request, 'Please select a handoff method.')
     
